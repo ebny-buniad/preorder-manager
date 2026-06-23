@@ -124,7 +124,6 @@ Request Body:
 ```json
 {
   "name": "Summer Collection",
-  "slug": "summer-collection",
   "products": 25,
   "preorderWhen": "out-of-stock",
   "startsAt": "2026-06-01T00:00:00.000Z",

@@ -1,0 +1,22 @@
+// Sqlite database schema for the Preorder model
+
+enum PreorderStatus {
+    Active
+    Inactive
+}
+
+model Preorder {
+    id           String         @id @default(uuid())
+    name         String         @unique
+    slug         String         @unique
+    products     Int            @default(0)
+    preorderWhen String
+    startsAt     DateTime
+    endsAt       DateTime?
+    status       PreorderStatus @default(Active)
+    createdAt    DateTime       @default(now())
+    updatedAt    DateTime       @updatedAt
+
+    @@index([preorderWhen, startsAt, endsAt], name: "preorder_when_starts_at_ends_at_index")
+    @@map("preorders")
+}

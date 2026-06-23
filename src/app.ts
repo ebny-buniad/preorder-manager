@@ -1,5 +1,7 @@
 import express, { Application, Request, Response } from "express";
 import dotenv from "dotenv";
+import { indexRouter } from "./app/router/index.routes";
+import globalErrorHandler from "./app/middleware/globalErrorHandler";
 // import { indexRouter } from "./app/router/index.routes";
 
 dotenv.config();
@@ -13,7 +15,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Connect all routes
-// app.use("/api/v1", indexRouter);
+app.use("/api/v1", indexRouter);
+
+app.use(globalErrorHandler);
 
 // Basic route
 app.get('/', (req: Request, res: Response) => {

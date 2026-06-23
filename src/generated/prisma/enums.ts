@@ -9,7 +9,9 @@
 * 🟢 You can import this file directly.
 */
 
+export const PreorderStatus = {
+  Active: 'Active',
+  Inactive: 'Inactive'
+} as const
 
-
-// This file is empty because there are no enums in the schema.
-export {}
+export type PreorderStatus = (typeof PreorderStatus)[keyof typeof PreorderStatus]

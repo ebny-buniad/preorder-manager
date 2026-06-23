@@ -1,5 +1,0 @@
-allowBuilds:
-  '@prisma/engines': false
-  better-sqlite3: false
-  esbuild: true
-  prisma: false

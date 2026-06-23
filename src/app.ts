@@ -1,5 +1,6 @@
 import express, { Application, Request, Response } from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 import { indexRouter } from "./app/router/index.routes";
 import globalErrorHandler from "./app/middleware/globalErrorHandler";
 // import { indexRouter } from "./app/router/index.routes";
@@ -13,6 +14,15 @@ app.use(express.urlencoded({ extended: true }));
 
 // Middleware to parse JSON bodies
 app.use(express.json());
+
+app.use(
+  cors({
+    origin: [
+      `${process.env.APP_URL}`,
+    ],
+    credentials: true,
+  }),
+);
 
 // Connect all routes
 app.use("/api/v1", indexRouter);

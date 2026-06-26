@@ -105,6 +105,13 @@ http://localhost:5000/api/v1/preorder
 
 For get specific preorder, update and delete
 http://localhost:5000/api/v1/preorder/(use preorder ID)
+
+router.post("/", validateRequest(PreorderValidation.createPreorderSchema), preorderController.createPreorder);
+router.get("/", preorderController.getAllPreorders);
+router.get("/:slug", preorderController.getPreorderById);
+router.put("/:id", validateRequest(PreorderValidation.updatePreorderSchema), preorderController.updatePreorder);
+router.patch("/:id/status", preorderController.updatePreorderStatus)
+router.delete("/:id", preorderController.deletePreorder);
 ```
 
 ---

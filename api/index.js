@@ -117,7 +117,8 @@ var createPreorder = async (payload) => {
   const preorder = await prisma_default.preorder.create({
     data: {
       ...payload,
-      slug
+      slug,
+      endsAt: payload.endsAt || null
     }
   });
   return preorder;
@@ -169,10 +170,10 @@ var getAllPreorders = async (query) => {
     data: preorders
   };
 };
-var getPreorderById = async (id) => {
+var getPreorderById = async (slug) => {
   const preorder = await prisma_default.preorder.findUnique({
     where: {
-      id
+      slug
     }
   });
   return preorder;
@@ -185,6 +186,12 @@ var updatePreorder = async (id, payload) => {
     data: payload
   });
   return preorder;
+};
+var updatePreorderStatus = async (id, status) => {
+  return prisma_default.preorder.update({
+    where: { id },
+    data: { status }
+  });
 };
 var deletePreorder = async (id) => {
   const preorder = await prisma_default.preorder.delete({
@@ -199,6 +206,7 @@ var preorderService = {
   getAllPreorders,
   getPreorderById,
   updatePreorder,
+  updatePreorderStatus,
   deletePreorder
 };
 
@@ -234,8 +242,8 @@ var getAllPreorders2 = catchAsync_default(async (req, res) => {
   });
 });
 var getPreorderById2 = catchAsync_default(async (req, res) => {
-  const { id } = req.params;
-  const preorder = await preorderService.getPreorderById(id);
+  const { slug } = req.params;
+  const preorder = await preorderService.getPreorderById(slug);
   sendResponse(res, {
     httpStatusCode: 200,
     success: true,
@@ -254,6 +262,18 @@ var updatePreorder2 = catchAsync_default(async (req, res) => {
     data: preorder
   });
 });
+var updatePreorderStatus2 = catchAsync_default(async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  ;
+  const preorder = await preorderService.updatePreorderStatus(id, status);
+  sendResponse(res, {
+    httpStatusCode: 200,
+    success: true,
+    message: "Preorder status updated successfully",
+    data: preorder
+  });
+});
 var deletePreorder2 = catchAsync_default(async (req, res) => {
   const { id } = req.params;
   const preorder = await preorderService.deletePreorder(id);
@@ -269,6 +289,7 @@ var preorderController = {
   getAllPreorders: getAllPreorders2,
   getPreorderById: getPreorderById2,
   updatePreorder: updatePreorder2,
+  updatePreorderStatus: updatePreorderStatus2,
   deletePreorder: deletePreorder2
 };
 
@@ -311,7 +332,10 @@ var createPreorderSchema = z.object({
       "regardless-of-stock"
     ]),
     startsAt: z.coerce.date(),
-    endsAt: z.coerce.date(),
+    endsAt: z.preprocess(
+      (val) => val === "" ? void 0 : val,
+      z.coerce.date().optional()
+    ),
     status: z.nativeEnum(
       PreorderStatus
     )
@@ -341,8 +365,9 @@ var PreorderValidation = {
 var router = Router();
 router.post("/", validateRequest_default(PreorderValidation.createPreorderSchema), preorderController.createPreorder);
 router.get("/", preorderController.getAllPreorders);
-router.get("/:id", preorderController.getPreorderById);
+router.get("/:slug", preorderController.getPreorderById);
 router.put("/:id", validateRequest_default(PreorderValidation.updatePreorderSchema), preorderController.updatePreorder);
+router.patch("/:id/status", preorderController.updatePreorderStatus);
 router.delete("/:id", preorderController.deletePreorder);
 var preorderRoutes = router;
 

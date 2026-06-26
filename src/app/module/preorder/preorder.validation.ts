@@ -7,10 +7,13 @@ const createPreorderSchema = z.object({
         products: z.number().int().positive(),
         preorderWhen: z.enum([
             "out-of-stock",
-            "always",
+            "regardless-of-stock",
         ]),
         startsAt: z.coerce.date(),
-        endsAt: z.coerce.date(),
+        endsAt: z.preprocess(
+            (val) => val === "" ? undefined : val,
+            z.coerce.date().optional()
+        ),
         status: z.nativeEnum(
             PreorderStatus
         ),
@@ -30,7 +33,7 @@ const updatePreorderSchema = z.object({
         preorderWhen: z
             .enum([
                 "out-of-stock",
-                "always",
+                "regardless-of-stock",
             ])
             .optional(),
 

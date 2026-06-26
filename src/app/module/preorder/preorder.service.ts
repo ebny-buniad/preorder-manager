@@ -19,7 +19,8 @@ const createPreorder = async (payload: ICreatePreorderPayload) => {
     const preorder = await prisma.preorder.create({
         data: {
             ...payload,
-            slug: slug
+            slug: slug,
+            endsAt: payload.endsAt || null,
         }
     });
     return preorder;
@@ -87,11 +88,11 @@ const getAllPreorders = async (query: IGetPreordersArgs) => {
     };
 };
 
-// ** Get preorder by ID API
-const getPreorderById = async (id: string) => {
+// ** Get preorder by Slug API
+const getPreorderById = async (slug: string) => {
     const preorder = await prisma.preorder.findUnique({
         where: {
-            id: id
+            slug: slug
         }
     });
     return preorder;
@@ -106,6 +107,17 @@ const updatePreorder = async (id: string, payload: Partial<IUpdatePreorderPayloa
         data: payload
     });
     return preorder;
+};
+
+// ** Update preorder status
+const updatePreorderStatus = async (
+    id: string,
+    status: "Active" | "Inactive"
+) => {
+    return prisma.preorder.update({
+        where: { id },
+        data: { status },
+    });
 };
 
 // ** Delete preorder API
@@ -123,5 +135,6 @@ export const preorderService = {
     getAllPreorders,
     getPreorderById,
     updatePreorder,
+    updatePreorderStatus,
     deletePreorder
 };

@@ -30,8 +30,8 @@ const getAllPreorders = catchAsync(async (req: Request, res: Response) => {
 
 // ** Get preorder by ID API
 const getPreorderById = catchAsync(async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const preorder = await preorderService.getPreorderById(id as string);
+    const { slug } = req.params;
+    const preorder = await preorderService.getPreorderById(slug as string);
     sendResponse(res, {
         httpStatusCode: 200,
         success: true,
@@ -53,6 +53,21 @@ const updatePreorder = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+
+// ** Update preorder status
+const updatePreorderStatus = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+     const { status } = req.body;;
+    const preorder = await preorderService.updatePreorderStatus(id as string, status);
+    sendResponse(res, {
+        httpStatusCode: 200,
+        success: true,
+        message: "Preorder status updated successfully",
+        data: preorder
+    });
+});
+
+
 // ** Delete preorder API
 const deletePreorder = catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params;
@@ -70,5 +85,6 @@ export const preorderController = {
     getAllPreorders,
     getPreorderById,
     updatePreorder,
+    updatePreorderStatus,
     deletePreorder
 };

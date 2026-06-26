@@ -264,3 +264,6 @@ prisma/
 6. Test the API using Postman or any REST client.
 
 The application uses SQLite, so no external database installation is required.
+
+
+Note: The project uses SQLite for local development. SQLite works reliably in local environments, but serverless platforms such as Vercel do not provide persistent filesystem storage required for SQLite databases. For production deployment, a managed database such as PostgreSQL (e.g., Neon or Supabase) is recommended.
